@@ -1,41 +1,13 @@
-# 阶段 1: 编译环境
-FROM ubuntu:22.04 AS builder
-
-ENV DEBIAN_FRONTEND=noninteractive
-
-# 安装编译 Telegram Bot API 所需的依赖
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    cmake \
-    git \
-    gperf \
-    libssl-dev \
-    zlib1g-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-WORKDIR /src
-COPY . .
-
-# 编译代码
-RUN mkdir build && cd build && \
-    cmake -DCMAKE_BUILD_TYPE=Release .. && \
-    cmake --build . --target telegram-bot-api -j$(nproc)
-
-# 阶段 2: 运行环境
-FROM ubuntu:22.04
-
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libssl3 \
-    zlib1g \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+FROM python:3.11-slim
 
 WORKDIR /app
-COPY --from=builder /src/build/telegram-bot-api /usr/local/bin/telegram-bot-api
 
-# 创建保存数据和日志的目录
-RUN mkdir -p /var/lib/telegram-bot-api
+# 安装依赖
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-EXPOSE 8081 8082
+# 复制 Bot 代码
+COPY . .
 
-ENTRYPOINT ["telegram-bot-api"]
+# 启动你的机器人主程序（根据你实际的文件名修改，如 bot.py 或 main.py）
+CMD ["python", "main.py"]
