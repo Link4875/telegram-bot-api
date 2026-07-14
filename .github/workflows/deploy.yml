@@ -1,0 +1,31 @@
+name: Deploy Telegram Bot to Oracle Cloud
+
+on:
+  push:
+    branches:
+      - main  # 当代码推送到 main 分支时自动触发
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: SSH and Deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT }}
+          script: |
+            # 1. 进入服务器上的项目目录（请根据实际路径修改）
+            cd ~/tg-bot
+            
+            # 2. 拉取最新代码
+            git pull origin main
+            
+            # 3. 使用 Docker Compose 重新构建并平滑重启容器
+            sudo docker-compose up -d --build
+            
+            # 4. 清理无用的旧镜像（防止 1G 内存磁盘被挤满）
+            sudo docker image prune -f
