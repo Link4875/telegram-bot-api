@@ -1,21 +1,10 @@
 version: '3.8'
 
 services:
-  telegram-bot-api:
+  my-tg-bot:
     build: .
-    container_name: tg_bot_api
+    container_name: tg_bot
     restart: always
-    network_mode: "host"
     environment:
-      - TELEGRAM_API_ID=你的API_ID         # 填入你在 my.telegram.org 申请的 api_id
-      - TELEGRAM_API_HASH=你的API_HASH     # 填入你在 my.telegram.org 申请的 api_hash
-    command: >
-      --api-id=${TELEGRAM_API_ID}
-      --api-hash=${TELEGRAM_API_HASH}
-      --local
-      --dir=/var/lib/telegram-bot-api
-      --temp-dir=/tmp/telegram-bot-api
-      --http-port=8081
-      --http-stat-port=8082
-    volumes:
-      - ./tg-data:/var/lib/telegram-bot-api
+      # 只需要这里填入 BotFather 给你的 Token 即可
+      - BOT_TOKEN=8944669616:AAEwFUi-qAS041c1TGNhE-TF_QfOP_hydU4
