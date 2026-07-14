@@ -3,7 +3,7 @@ name: Deploy Telegram Bot to Oracle Cloud
 on:
   push:
     branches:
-      - main  # 当代码推送到 main 分支时自动触发
+      - matser  # 当代码推送到 main 分支时自动触发
 
 jobs:
   deploy:
