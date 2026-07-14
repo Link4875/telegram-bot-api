@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  telegram-bot-api:
+    build: .
+    container_name: tg_bot_api
+    restart: always
+    network_mode: "host"
+    environment:
+      - TELEGRAM_API_ID=你的API_ID         # 填入你在 my.telegram.org 申请的 api_id
+      - TELEGRAM_API_HASH=你的API_HASH     # 填入你在 my.telegram.org 申请的 api_hash
+    command: >
+      --api-id=${TELEGRAM_API_ID}
+      --api-hash=${TELEGRAM_API_HASH}
+      --local
+      --dir=/var/lib/telegram-bot-api
+      --temp-dir=/tmp/telegram-bot-api
+      --http-port=8081
+      --http-stat-port=8082
+    volumes:
+      - ./tg-data:/var/lib/telegram-bot-api
